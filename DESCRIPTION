@@ -1,0 +1,16 @@
+Package: Regressao
+Title: Funções para Regressão Linear e Gráficos
+Version: 0.1.0
+Authors@R: c(person("Matheus", "Rubio Wodewotzki", email = "m204345@dac.unicamp.br", role = c("aut", "cre")),
+             person("Thiago Makoto", "Fujiwara Miyaji", email = "t194340@dac.unicamp.br", role = c("aut", "cre")),
+             person("Paula", "Liserre Calabrez", email = "p242782@dac.unicamp.br", role = c("aut", "cre")),
+             person("Brenda", "Luiza Correa", email = "b216037@dac.unicamp.br", role = c("aut", "cre")),
+             person("Luis Gustavo", "Lopes Leal Silva", email = "l251363@dac.unicamp.br", role = c("aut", "cre")))
+Description: Um pacote com funções para calcular coeficientes, resíduos e gerar gráficos de predição para regressões lineares.
+Depends: R (>= 3.5.0)
+Imports: 
+    ggplot2
+License: MIT
+Encoding: UTF-8
+LazyData: true
+
