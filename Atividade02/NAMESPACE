@@ -1,0 +1,7 @@
+exportPattern("^[[:alpha:]]+")
+export(betas)
+export(preditos)
+export(residuos)
+export(grafico)
+export(novos_preditos)
+
