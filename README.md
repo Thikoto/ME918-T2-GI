@@ -12,6 +12,19 @@ O pacote inclui as seguintes funções principais:
 - `novos_preditos()`: Esta função realiza predições para novos dados com base em um modelo de regressão ajustado manualmente.
 - `grafico()`: Esta função gera um gráfico comparando os valores observados com os valores preditos para o modelo de regressão.
 
+O pacote também inclui o seguinte conjunto de dados:
+
+- `dados_teste`: Dados para testes de regressão linear com as seguintes colunas:
+  - `y_erro`: Resultados de uma regressão linear de `x1`, `x2` e `x3` com erro normal.
+  - `y_sem_erro`: Resultados de uma regressão linear de `x1`, `x2` e `x3` sem adição do erro, resultando em Resíduos iguais a zero.
+  - `x1`: Dados de uma normal com média 56 e variância 1
+  - `x2`: Dados de uma normal com média 89 e variância 1.5
+  - `x3`: Dados de uma normal com média 15 e variância 3
+  - `x_constante`: Coluna com valores constantes "20" em todas as observações
+  - `x_seq`: Coluna com valores sequenciais de 1 a 150
+  - `x_seq2`: Coluna com valores sequenciais que equivalem a 2*x_seq, resultando em matriz sem posto completo
+    
+
 ## Instalação
 
 Para instalar este pacote diretamente do GitHub, você pode usar o `devtools`:
@@ -21,7 +34,7 @@ Para instalar este pacote diretamente do GitHub, você pode usar o `devtools`:
 install.packages("devtools")
 
 # Instale o pacote a partir do GitHub
-devtools::install_github("seu-usuario/seu-repositorio")
+devtools::install_github("Thikoto/ME918-T2-GI")
 ```
 
 ## Exemplo de uso
