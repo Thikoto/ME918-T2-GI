@@ -14,6 +14,7 @@
 #' X <- matrix(c(1, 2, 3, 4, 5), ncol = 1)
 #' y <- c(2, 4, 6, 8, 10)
 #' betas_est <- betas(dados = NULL, X, y)
+
 betas = function(dados, x, y) {
   # Validações de entrada
   if (!is.matrix(x) && !is.data.frame(x)) {
@@ -24,6 +25,13 @@ betas = function(dados, x, y) {
   }
   if (nrow(as.matrix(x)) != length(y)) {
     stop("O número de linhas de x deve ser igual ao comprimento de y.")
+  }
+
+  # Verifica se a matriz X tem posto completo
+  qr_decomp <- qr(x)
+  rank_x <- qr_decomp$rank
+  if (rank_x < ncol(x)) {
+    stop("A matriz X não possui posto completo.")
   }
 
   # Cálculo dos betas
@@ -41,19 +49,16 @@ betas = function(dados, x, y) {
 #' Esta função calcula os valores preditos com base nas variáveis independentes
 #' e nos coeficientes estimados pelo modelo de regressão.
 #'
-#' @param dados Um data frame ou matriz contendo as variáveis independentes e dependentes.
 #' @param x Uma matriz das variáveis independentes. Deve ser numérica, sem a coluna do intercepto.
-#' @param y Um vetor numérico com os valores observados da variável dependente.
+#' @param betas Uma matriz com os valores dos betas da regressão. Recomenda-se o uso da função 'betas'
 #'
 #' @return Um vetor numérico com os valores preditos.
 #' @export
 #'
 #' @examples
 #' X <- matrix(c(1, 2, 3, 4, 5), ncol = 1)
-#' y <- c(2, 4, 6, 8, 10)
-#' y_pred <- preditos(dados = NULL, X, y)
-
-#betas_estimados = betas(mtcars, matrix(c(mtcars$cyl, mtcars$hp, mtcars$disp), ncol = 3), mtcars$mpg)
+#' beta_p <- matrix(c(0.5, 2), nrow = 2, ncol = 1)
+#' y_pred <- preditos(X, beta_p)
 
 preditos = function(x, betas) {
   # Validações de entrada
@@ -67,24 +72,23 @@ preditos = function(x, betas) {
   return(y_pred)
 }
 
-#valores_preditos = preditos(mtcars, matrix(c(mtcars$cyl, mtcars$hp, mtcars$disp), ncol = 3), betas_estimados)
 
 #' Calcula os resíduos do modelo de regressão linear
 #'
 #' Esta função calcula os resíduos (diferença entre os valores observados e os preditos)
 #' para um modelo de regressão linear.
 #'
-#' @param dados Um data frame ou matriz contendo as variáveis independentes e dependentes.
-#' @param x Uma matriz das variáveis independentes. Deve ser numérica, sem a coluna do intercepto.
 #' @param y Um vetor numérico com os valores observados da variável dependente.
+#' @param preditos Um vetor numérico com os valores preditos da variável dependente. Recomenda-se o uso da função 'preditos'
 #'
 #' @return Um vetor numérico com os resíduos.
 #' @export
 #'
 #' @examples
-#' X <- matrix(c(1, 2, 3, 4, 5), ncol = 1)
 #' y <- c(2, 4, 6, 8, 10)
-#' res <- residuos(dados = NULL, X, y)
+#' y_pred <- matrix(c(2.5, 4.6, 6.2, 8.9, 11), nrow = 5, ncol = 1)
+#' res <- residuos(y, y_pred)
+
 residuos = function(y, preditos) {
   # Validações de entrada
   if (!is.numeric(y)) {
@@ -103,20 +107,17 @@ residuos = function(y, preditos) {
 #'
 #' Esta função realiza predições para novos dados com base em um modelo de regressão ajustado manualmente.
 #'
-#' @param dados Um data frame ou matriz contendo as variáveis independentes e dependentes.
-#' @param novos_dados Uma matriz ou data frame numérico com os novos valores para predição.
+#' @param novox Uma matriz ou data frame numérico com os novos valores para predição.
 #' O número de colunas deve ser o mesmo da matriz X original (sem a coluna de intercepto).
-#' @param x Uma matriz das variáveis independentes utilizadas no ajuste do modelo original.
-#' @param y Um vetor numérico com os valores observados da variável dependente.
+#' @param betas Uma matriz com os valores dos betas da regressão. Recomenda-se o uso da função 'betas'
 #'
 #' @return Um vetor numérico com os valores preditos para os novos dados.
 #' @export
 #'
 #' @examples
-#' X <- matrix(c(1, 2, 3, 4, 5), ncol = 1)
-#' y <- c(2, 4, 6, 8, 10)
-#' novos_dados <- matrix(c(6, 7), ncol = 1)
-#' novas_predicoes <- predizer_novos_valores(dados = NULL, novos_dados, X, y)
+#' newx <- matrix(c(2, 5, 7), ncol = 1)
+#' beta_nx <- matrix(c(0.5, 2), nrow = 2, ncol = 1)
+#' novas_predicoes <- novos_preditos(newx, beta_nx)
 
 novos_preditos = function(novox, betas) {
   # Validações de entrada
@@ -125,7 +126,7 @@ novos_preditos = function(novox, betas) {
   }
   # Calcula os valores preditos usando os betas estimados
   x = cbind(1, novox)
-  y_pred = novox %*% betas
+  y_pred = x %*% betas
 
   return(y_pred)
 }
@@ -134,37 +135,33 @@ novos_preditos = function(novox, betas) {
 #'
 #' Esta função gera um gráfico comparando os valores observados com os valores preditos para o modelo de regressão.
 #'
-#' @param dados Um data frame ou matriz contendo as variáveis independentes e dependentes.
-#' @param x Uma matriz das variáveis independentes utilizadas no ajuste do modelo original.
 #' @param y Um vetor numérico com os valores observados da variável dependente.
+#' @param preditos Um vetor numérico com os valores preditos da variável dependente. Recomenda-se o uso da função 'preditos'
 #'
 #' @return Um gráfico de valores preditos vs observados.
 #' @export
 #'
 #' @examples
-#' X <- matrix(c(1, 2, 3, 4, 5), ncol = 1)
 #' y <- c(2, 4, 6, 8, 10)
-#' plot_predito_vs_observado(dados = NULL, X, y)
+#' y_pred <- matrix(c(2.5, 4.6, 6.2, 8.9, 11), nrow = 5, ncol = 1)
+#' grafico(y, y_pred)
 
-grafico = function(y, preditos, residuos){
+grafico = function(y, preditos){
+  residuo = y - preditos
+
   par(mfrow = c(2,2))
   plot(y , preditos, main = "Valores Observados vs Valores Preditos", xlab = "Valores Observados", ylab = "Valores Preditos")
   abline(0, 1, col = "deeppink2")
 
-  plot(preditos, residuos, main = "Residuos vs Valores Preditos",
+  plot(preditos, residuo, main = "Residuos vs Valores Preditos",
        xlab = "Valores Previstos", ylab = "Residuos")
   abline(h = 0, col = "#D9006E")
 
-  hist(residuos, main = "Histograma dos Residuos",
+  hist(residuo, main = "Histograma dos Residuos",
        xlab = "Residuos", breaks = 30, col = "pink2")
 
-  qqnorm(residuos, main = "QQ Plot dos Residuos")
-  qqline(residuos, col ="#D9006E")
+  qqnorm(residuo, main = "QQ Plot dos Residuos")
+  qqline(residuo, col ="#D9006E")
 }
-
-#graficos = grafico(mtcars$mpg, valores_preditos, residuos_obtido)
-
-
-
 
 
